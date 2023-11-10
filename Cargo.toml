@@ -1,0 +1,31 @@
+[package]
+name = "bitcoin_fake"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[dependencies]
+anyhow = { }                    # 基于基础的错误类型实现错误处理
+bincode = { }                   # 二进制数据的编解码
+bs58 = { }                      # base58编码解码
+chrono = { }                    # 时间和日期的库
+crossbeam = { }                 # 并发编程相关的库
+crossbeam-channel = { }         # 多生产者多消费者的消息通道
+crossbeam-utils = { }           # 并发编程相关的组件
+digest = { }                    # 加密哈希函数的相关实现
+futures = { }                   # 异步编程的库
+libp2p = { }                    # 点对点网络的库
+once_cell = { }                 # 存储任意非复制类型，最多可以分配一次并提供对存储内容的直接访问 
+rs_merkle = { }                 # rust的默克尔树实现
+serde = { }                     # 序列化/反序列化框架
+serde_json = { }                # JSON与其他格式数据的转换方法
+sled = { }                      # sleddb数据库
+thiserror = { }                 # 提供对于错误的提示的派生宏
+tokio = { }                     # 提供程序的异步运行时
+tokio-util = { }                # tokio的一些额外程序
+tracing = { }                   # 收集程序信息形成日志的框架
+uint = { }                      # 提供构造无符号整数的大类型的工具，性能可观，可跨平台
+
+
