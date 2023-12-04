@@ -1,11 +1,17 @@
 mod chain;
 mod consensus;
 mod crypto;
-mod miner;
 mod network;
-mod stroage;
+mod storage;
 mod transaction_base;
-mod wallet;
+mod wallet_base;
+mod error;
+
+pub use chain::*;
+pub use transaction_base::*;
+pub use wallet_base::*;
+pub use storage::*;
+pub use network::*;
 
 
 #[cfg(test)]

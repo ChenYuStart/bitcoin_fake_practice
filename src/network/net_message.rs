@@ -1,30 +1,33 @@
+use serde::{Serialize, Deserialize};
 
-struct Messages {
-    message: map[String, Vec<Transaction],
-    timestamp: usize,
+use crate::chain::Block;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Commands {
+    Genesis(String),
+    Blocks(String),
+    Sync(String),
+    CreateWallet(String),
+    GetAddress(String),
+    Transaction {
+        from: String,
+        to: String,
+        amount: String,
+    },
 }
 
-impl Messages {
-    fn new_message(&self) {
-
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Messages {
+    BroadcastSync {
+        best_height: usize,
+        from_addr: String,
+    },
+    BroadcastChain {
+        blocks: Vec<Block>,
+        height: usize,
+        to_addr: String,
+    },
+    BroadcastBlock {
+        block: Block,
     }
-}
-
-fn process_connecting() {
-
-}
-fn process_transaction() {
-
-}
-fn broadcast_message() {
-
-}
-fn receive_message() {
-
-}
-fn drop_message() {
-
-}
-fn judge_block() {
-    
 }

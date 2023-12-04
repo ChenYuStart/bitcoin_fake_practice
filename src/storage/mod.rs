@@ -1,0 +1,43 @@
+mod sleddb;
+
+pub use sleddb::ChainStorage;
+
+use std::collections::HashMap;
+
+use crate::{chain::Block, error::BlockChainError, transaction_base::TxOut};
+
+pub const LATEST_KEY: &str = "latest_block_hash";
+pub const HEIGHT: &str = "height";
+pub const TABLE_OF_BLOCK: &str = "blocks";
+pub const UTXO_SET: &str = "utxos";
+
+pub trait Storage: Send + Sync + 'static {
+    fn get_latest_block_hash(&self) -> Result<Option<String>, BlockChainError>;
+    fn get_block(&self, key: &str) -> Result<Option<Block>, BlockChainError>;
+    fn get_height(&self) -> Result<Option<usize>, BlockChainError>;
+    fn update_blocks(&self, key: &str, block: &Block, height: usize);
+    fn get_block_iter(&self) -> Result<Box<dyn Iterator<Item = Block>>, BlockChainError>;
+    fn get_utxo_set(&self) -> HashMap<String, Vec<TxOut>>;
+    fn write_utxo(&self, tx_hash: &str, outs: Vec<TxOut>) -> Result<(), BlockChainError>;
+    fn clear_utxo_set(&self);
+}
+
+pub struct StorageIterator<T> {
+    data: T
+}
+
+impl<T> StorageIterator<T> {
+    fn new(data: T) -> Self {
+        Self { data }
+    }
+}
+
+impl<T> Iterator for StorageIterator<T> where
+    T: Iterator,
+    T::Item: Into<Block> {
+    type Item = Block;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.data.next().map(|v| v.into())
+    }
+}

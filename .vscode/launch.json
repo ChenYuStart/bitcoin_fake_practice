@@ -1,0 +1,175 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'bitcoin_fake'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "bitcoin_fake",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'server'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=server",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "server",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'server'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=server",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "server",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'chain'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=chain",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "chain",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'chain'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=chain",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "chain",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'transaction'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=transaction",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "transaction",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'transaction'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=transaction",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "transaction",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'tx'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=tx",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "tx",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'tx'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=tx",
+                    "--package=bitcoin_fake"
+                ],
+                "filter": {
+                    "name": "tx",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
