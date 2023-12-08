@@ -1,7 +1,7 @@
 
 
 trait Storage: Debug + Clone + Send + Sync + 'static {
-    /// Current block height.
+    /*/// Current block height.
     fn block_height(&self) -> u64;
 
     /// Next account nonce to be used.
@@ -26,5 +26,5 @@ trait Storage: Debug + Clone + Send + Sync + 'static {
     fn get_balances(&self) -> HashMap<String, u64>;
 
     /// Get all the nonces of the accounts.
-    fn get_account2nonce(&self) -> HashMap<String, u64>;
+    fn get_account2nonce(&self) -> HashMap<String, u64>;*/
 }

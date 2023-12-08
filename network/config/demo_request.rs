@@ -13,7 +13,6 @@ impl Request {
         }
     }
 
-    /// Build a new request to get blocks from the given number.
     pub fn new_blocks_req(from_number: u64) -> Self {
         Self {
             method: Method::Blocks as i32,

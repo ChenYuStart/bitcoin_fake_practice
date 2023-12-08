@@ -8,7 +8,6 @@ impl P2pClient {
     }
 }
 
-// Implement `Deref` so that we can call `Client` methods on `P2pClient`.
 impl Deref for P2pClient {
     type Target = Client;
 

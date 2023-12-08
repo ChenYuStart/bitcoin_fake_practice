@@ -1,5 +1,6 @@
 
 
+
 enum DemoCommand {
     BlockInfo(String),
     CreateWallet(String),

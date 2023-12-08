@@ -44,13 +44,11 @@ impl<S: State, P: PeerClient> Miner<S, P> {
 
         loop {
             select! {
-                // A new transaction is received.
                 recv(self.tx_receiver) -> msg => {
                     if let Ok(tx_msg) = msg {
                         self.add_pending_tx(tx_msg);
                     }
                 }
-                // It's time to mine a new block.
                 recv(ticker) -> _ => {
                     if self.pending_txs.is_empty() {
                         continue;
@@ -69,7 +67,6 @@ impl<S: State, P: PeerClient> Miner<S, P> {
                         }
                     }
                 },
-                // A new block is received.
                 recv(self.block_receiver) -> msg => {
                     if let Ok(block) = msg {
                         let _ = self.add_block(block);
@@ -85,8 +82,6 @@ impl<S: State, P: PeerClient> Miner<S, P> {
         let timer = time::Instant::now();
 
         while !utils::is_valid_hash(&block.hash(), mining_difficulty) {
-            // Every time before a new attempt, check if there are any blocks from other peers,
-            // if so, cancel this mining.
             if let Ok(block) = self.block_receiver.try_recv() {
                 info!("📣 Received a block from other peers, cancel mining.");
                 let _ = self.add_block(block);
@@ -96,9 +91,6 @@ impl<S: State, P: PeerClient> Miner<S, P> {
             if attempt % 10000 == 0 {
                 let elapsed = timer.elapsed();
                 info!("📣 Mining attempt: {}, elapsed: {:?}", attempt, elapsed);
-
-                // To demonstrate that different miners have different mining power,
-                // we mock a heavy work that takes random seconds.
                 std::thread::sleep(Duration::from_secs(block.nonce() % 10));
             }
             attempt += 1;
@@ -158,11 +150,9 @@ impl<S: State, P: PeerClient> Miner<S, P> {
     }
 
     fn reset_pending_state(&mut self) {
-        // load from `state`
         self.pending_state.balances = self.state.get_balances();
         self.pending_state.account2nonce = self.state.get_account2nonce();
 
-        // load from `pending_txs`
         for tx in self.get_sorted_txs() {
             self.update_pending_state(&tx);
         }

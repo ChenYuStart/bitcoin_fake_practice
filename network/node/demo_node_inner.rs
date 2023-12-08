@@ -1,5 +1,6 @@
 
 
+
 struct NodeInner<ChainStorage> {
     state: ChainStorage,
     tx_sender: Sender<Transaction>,

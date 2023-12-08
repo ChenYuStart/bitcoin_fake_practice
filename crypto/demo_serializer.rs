@@ -1,5 +1,6 @@
 
 
+
 pub fn serialize<T>(data: &T) -> Result<Vec<u8>, BlockChainError> where
     T: Serialize + ?Sized {
     Ok(bincode::serialize(data).unwrap())

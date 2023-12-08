@@ -30,14 +30,11 @@ pub fn new_router<S: State>(node: Node<S>) -> Router {
 
 async fn get_blocks<S: State>(
     Extension(node): Extension<Node<S>>,
-    Query(params): Query<GetBlocksReq>,
-) -> impl IntoResponse {
+    Query(params): Query<GetBlocksReq>,) -> impl IntoResponse {
     info!("📣 >> get_blocks by: {:?}", params);
     let blocks: Vec<BlockResp> = node
-        .get_blocks(params.from_number)
-        .into_iter()
-        .map(BlockResp::from)
-        .collect();
+        .get_blocks(params.from_number).into_iter()
+        .map(BlockResp::from).collect();
     info!("📣 << get_blocks response: {:?}", blocks);
 
     Json(blocks)
@@ -45,8 +42,7 @@ async fn get_blocks<S: State>(
 
 async fn get_block<S: State>(
     Extension(node): Extension<Node<S>>,
-    Path(number): Path<u64>,
-) -> impl IntoResponse {
+    Path(number): Path<u64>,) -> impl IntoResponse {
     info!("📣 >> get_block by: {:?}", number);
     let block = node.get_block(number).map(BlockResp::from);
     info!("📣 << get_block response: {:?}", block);
@@ -65,10 +61,8 @@ async fn get_balances<S: State>(Extension(node): Extension<Node<S>>) -> impl Int
     Json(resp)
 }
 
-async fn next_account_nonce<S: State>(
-    Extension(node): Extension<Node<S>>,
-    Query(params): Query<NonceReq>,
-) -> impl IntoResponse {
+async fn next_account_nonce<S: State>(Extension(node): Extension<Node<S>>,
+    Query(params): Query<NonceReq>,) -> impl IntoResponse {
     info!("📣 >> next_account_nonce by: {:?}", params);
     let resp = json!({ "nonce": node.next_account_nonce(&params.account) });
     info!("📣 << next_account_nonce response: {:?}", resp);
@@ -76,10 +70,8 @@ async fn next_account_nonce<S: State>(
     Json(resp)
 }
 
-async fn transfer<S: State>(
-    Extension(node): Extension<Node<S>>,
-    Json(tx): Json<TxReq>,
-) -> Result<impl IntoResponse, HttpError> {
+async fn transfer<S: State>(Extension(node): Extension<Node<S>>, Json(tx): Json<TxReq>,)
+    -> Result<impl IntoResponse, HttpError> {
     info!("📣 >> transfer: {:?}", tx);
     let resp = node.transfer(&tx.from, &tx.to, tx.value, tx.nonce);
     info!("📣 << transfer response: {:?}", resp);

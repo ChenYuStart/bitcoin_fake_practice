@@ -3,12 +3,13 @@
 
 struct Block {
     header: BlockHeader,
-    tx_single: Vec<Transaction>,
+    tx_sets: Vec<Transaction>,
     checked: bool,
 }
 
 impl Block {
     fn new(txs: &[Transaction], prev_hash: &str, bits: u32) -> Block {
+        let tx_sets = Vec::with_capacity(2);
         let mut block = Block {
             header: BlockHeader::new(prev_hash, bits),
             tx_sets: txs.to_vec(),
@@ -24,11 +25,11 @@ impl Block {
 
     fn create_genesis_block(bits: u32, genesis_addr: &str) -> Self {
         let coinbase = Transaction::new_coinbase(genesis_addr);
-        Self::new(&vec![coinbase], "it's coinbase genesis block", bits)
+        Self::new(&vec![coinbase], "it's genesis block", bits)
     }
 
     fn get_header(&mut self) -> BlockHeader {
-        self.header
+        self.header.clone()
     }
 
     fn get_txs(&self) -> Vec<Transaction> {

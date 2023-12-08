@@ -1,5 +1,7 @@
 
 
+
+
 pub const DEFAULT_BITS: usize = 8;
 
 struct BlockChain<ChainStorage> {

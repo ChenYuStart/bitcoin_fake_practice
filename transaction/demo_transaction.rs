@@ -1,5 +1,7 @@
 
 
+const SUBSIDY: i32= 10;
+
 struct Transaction {
     tx_hash: String,
     vin: Vec<TxIn>,
@@ -21,13 +23,13 @@ impl Transaction {
         tx
     }
 
-    pub fn new_utxo<T: Storage>(from: &str, to: &str, amount: i32, utxo_set: &UTXOSet<T>,
-        chain: &BlockChain<T>) -> Self {
+    pub fn new_utxo<T: ChainStorage, U: UtxoStorage>(from: &str, to: &str, amount: i32,
+        utxo_set: &UTXOSet<U>, chain: &BlockChain<T>) -> Self {
         let wallet_map = WalletMap::load_wallet_from_file().unwrap();
         println!("wallet_map: {:?}", wallet_map);
         let wallet = wallet_map.get_wallet(from).unwrap();
-        let encode_pre = wallet.get_personal_key();
-        let public_key_hash = hash_encode_pub_key(encode_pre.as_bytes());
+        /*let encode_pre = wallet.get_personal_key();
+        let public_key_hash = hash_encode_pub_key(encode_pre.as_bytes());*/
         
         let (accumulated, valid_outputs) = utxo_set.find_spendable_outputs(&public_key_hash, amount);
         if accumulated < amount {
@@ -60,14 +62,18 @@ impl Transaction {
 
     fn set_tx_hash(&mut self) {
         if let Ok(tx_serialize) = serialize(self) {
-            self.tx_hash = sha256_to_string(&tx_serialize)
+            self.tx_hash = sha256(&tx_serialize)
         }
     }
 
     fn sign<T: Storage>(&mut self, chain: &BlockChain<T>, pkcs8: &[u8]) {
-        let mut tx_copy = self.trimmed_copy();
         let is_coinbase = self.is_coinbase();
+        let mut tx_copy = self.trimmed_copy();
         for (idx, vin) in self.vin.iter_mut().enumerate() {
+            if is_coinbase {
+                vin.set_signature("coinbase sign");
+                continue
+            }
             let prev_tx_option = chain.find_transaction(vin.get_tx_hash());
             if prev_tx_option.is_none() {
                 println!("ERROR: Previous transaction is not correct");
@@ -115,15 +121,15 @@ impl Transaction {
     }
 
     fn is_coinbase(&self) -> bool {
-        self.vin.len() != 0 && self.vin[0].get_signature().len() == 0
+        self.vin[0].get_signature() == "coinbase sign"
     }
 
     fn trimmed_copy(&self) -> Transaction {
         let mut inputs = vec![];
         let mut outputs = vec![];
         for input in &self.vin {
-            let txinput = TxIn::new(input.get_tx_hash(), input.get_vout().try_into().unwrap(), "");
-            inputs.push(txinput);
+            let tx_input = TxIn::new(input.get_tx_hash(), input.get_vout().try_into().unwrap(), "");
+            inputs.push(tx_input);
         }
         for output in &self.vout {
             outputs.push(output.clone());
@@ -131,19 +137,19 @@ impl Transaction {
         Transaction {
             vin: inputs,
             vout: outputs,
-            tx_hash: self.tx_hash.clone(),
+            tx_hash: self.get_tx_hash(),
         }
     }
 
-    pub fn get_vout(&self) -> &[TxOut] {
+    fn get_vout(&self) -> &[TxOut] {
         self.vout.as_slice()
     }
 
-    pub fn get_vin(&self) -> &[TxIn] {
+    fn get_vin(&self) -> &[TxIn] {
         self.vin.as_slice()
     }
 
-    pub fn get_tx_hash(&self) -> String {
+    fn get_tx_hash(&self) -> String {
         self.tx_hash.clone()
     }
 }

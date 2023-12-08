@@ -1,5 +1,6 @@
 
 
+
 fn get_node_status(client: Client) {
     let dur = Duration::from_secs(7);
     loop {
@@ -40,13 +41,11 @@ fn broadcast(client: Client) {
     }
 }
 
-/// Create a new secret key for the p2p node.
 pub fn new_secret_key() -> String {
     let secret = ed25519::SecretKey::generate();
     bs58::encode(secret.as_ref()).into_string()
 }
 
-/// Create a new p2p node, which consists of a `Client` and a `Server`.
 pub fn new<E: EventHandler>(config: P2pConfig) -> Result<(Client, Server<E>), P2pError> {
     let (cmd_sender, cmd_receiver) = mpsc::unbounded_channel();
 

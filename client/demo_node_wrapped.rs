@@ -1,4 +1,6 @@
 
+
+
 struct EventHandlerImpl<S: ChainStorage>(Node<S>);
 
 impl<S: ChainStorage> EventHandlerImpl<S> {

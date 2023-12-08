@@ -31,23 +31,11 @@ impl State for MemoryState {
     }
 
     fn next_account_nonce(&self, account: &str) -> u64 {
-        self.inner
-            .read()
-            .unwrap()
-            .account2nonce
-            .get(account)
-            .cloned()
-            .unwrap_or(0)
+        self.inner.read().unwrap().account2nonce.get(account).cloned().unwrap_or(0)
     }
 
     fn last_block_hash(&self) -> Option<Hash> {
-        self.inner
-            .read()
-            .unwrap()
-            .blocks
-            .values()
-            .last()
-            .map(|b| b.hash())
+        self.inner.read().unwrap().blocks.values().last().map(|b| b.hash())
     }
 
     fn add_block(&self, block: Block) -> Result<(), Error> {
@@ -61,10 +49,7 @@ impl State for MemoryState {
         }
 
         // Apply block
-        fetch_add(
-            &mut inner.balances,
-            block.author().into(),
-            block.block_reward(),
+        fetch_add(&mut inner.balances, block.author().into(), block.block_reward(),
         );
         inner.blocks.insert(block.number(), block);
 
@@ -72,13 +57,7 @@ impl State for MemoryState {
     }
 
     fn get_blocks(&self, from_number: u64) -> Vec<Block> {
-        self.inner
-            .read()
-            .unwrap()
-            .blocks
-            .range(from_number..)
-            .map(|(_, block)| block.clone())
-            .collect()
+        self.inner.read().unwrap().blocks.range(from_number..).map(|(_, block)| block.clone()).collect()
     }
 
     fn get_block(&self, number: u64) -> Option<Block> {
@@ -86,13 +65,7 @@ impl State for MemoryState {
     }
 
     fn get_balance(&self, account: &str) -> u64 {
-        self.inner
-            .read()
-            .unwrap()
-            .balances
-            .get(account)
-            .cloned()
-            .unwrap_or(0)
+        self.inner.read().unwrap().balances.get(account).cloned().unwrap_or(0)
     }
 
     fn get_balances(&self) -> HashMap<String, u64> {

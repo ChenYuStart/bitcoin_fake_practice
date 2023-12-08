@@ -1,4 +1,5 @@
 
+
 #[derive(NetworkBehaviour)]
 struct DemoChainBehaviour {
     kad: Kademlia<MemoryStore>,
@@ -10,9 +11,7 @@ struct DemoChainBehaviour {
 }
 
 impl DemoChainBehaviour {
-    pub fn new(
-        local_key: Keypair,
-        pubsub_topics: Vec<String>,
+    pub fn new(local_key: Keypair, pubsub_topics: Vec<String>,
         req_resp_config: Option<ReqRespConfig>,
     ) -> Result<Self, P2pError> {
         let local_pubkey = local_key.public();

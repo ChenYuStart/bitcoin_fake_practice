@@ -1,5 +1,6 @@
 
 
+
 pub struct GenericProtocol;
 
 impl AsRef<str> for GenericProtocol {

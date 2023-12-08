@@ -1,7 +1,7 @@
 
 
 trait PeerClient: Debug + Clone + Send + Sync + 'static {
-    /// Return the peers (base58 encoded peer ids) that this node knows about.
+    /*/// Return the peers (base58 encoded peer ids) that this node knows about.
     fn known_peers(&self) -> Vec<String>;
 
     /// Get the block height from a peer.
@@ -14,5 +14,5 @@ trait PeerClient: Debug + Clone + Send + Sync + 'static {
     fn broadcast_tx(&self, tx: SignedTx);
 
     /// Broadcast a block to the network.
-    fn broadcast_block(&self, block: Block);
+    fn broadcast_block(&self, block: Block);*/
 }

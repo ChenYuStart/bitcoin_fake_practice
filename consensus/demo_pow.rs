@@ -23,8 +23,8 @@ impl PowParameters {
                 let hash_u = sha256(&pre_hash);
                 //let hash = hash_u.as_slice();
                 let pre_hash_int = Uint256::from(hash_u.as_slice());
-                dbg!(self.target);
-                dbg!(pre_hash_int);
+                //dbg!(self.target);
+                //dbg!(pre_hash_int);
                 if pre_hash_int < self.target {
                     block.header.set_prev_hash(sha256_to_string(&pre_hash_clone));
                     break;

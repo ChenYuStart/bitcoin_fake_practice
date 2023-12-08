@@ -1,5 +1,7 @@
 
 
+
+
 struct BlockHeader {
     nbits: usize,
     timestamp: usize,

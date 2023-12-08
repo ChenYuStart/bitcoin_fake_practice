@@ -5,12 +5,8 @@ struct ChainNode<ChainStorage> {
 }
 
 impl<ChainStorage> ChainNode<ChainStorage> {
-    pub fn new(
-        state: S,
-        wallet: Wallet,
-        tx_sender: Sender<TxMsg>,
-        block_sender: Sender<Block>,
-    ) -> Self {
+    pub fn new(state: S, wallet: Wallet, tx_sender: Sender<TxMsg>,
+        block_sender: Sender<Block>,) -> Self {
         Self {
             inner: Arc::new(NodeInner {
                 state,
@@ -25,7 +21,8 @@ impl<ChainStorage> ChainNode<ChainStorage> {
         self.state.next_account_nonce(account)
     }
 
-    pub fn transfer(&self, from: &str, to: &str, value: u64, nonce: u64) -> Result<(), Error> {
+    pub fn transfer(&self, from: &str, to: &str, value: u64, nonce: u64)
+        -> Result<(), Error> {
         let tx = Tx::new(from, to, value, nonce);
         let signed_tx = self.sign_tx(tx)?;
         let _ = self.tx_sender.send(TxMsg {
@@ -67,7 +64,6 @@ impl<ChainStorage> ChainNode<ChainStorage> {
         });
     }
 
-    // Sign a transaction on behalf of users.
     fn sign_tx(&self, tx: Tx) -> Result<SignedTx, Error> {
         let sig = self.wallet.sign(&tx.as_bytes(), &tx.from)?;
 
