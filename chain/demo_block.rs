@@ -17,8 +17,8 @@ impl Block {
         };
         block.header.set_root_hash(txs);
 
-        //let mut pow = PowParams::new(bits);
-        //pow.run(&mut block);
+        let mut pow = PowParams::new(bits);
+        pow.run(&mut block);
 
         block
     }

@@ -1,11 +1,11 @@
 
 
 
-struct UtxoStorage {
-    utxo_storage: sled::Db, //Map<(TxHash, OutIndex), (ToAddress, Amount)>,
+struct UtxoState {
+    utxo_state: sled::Db, //Map<(TxHash, OutIndex), (ToAddress, Amount)>,
 }
 
-impl UtxoStorage {
+impl UtxoState {
 
     fn get_utxo_set(&self) -> HashMap<(String, usize), (String, i32)> {
         let mut map: HashMap<String, Vec<TxOut>> = HashMap::new();

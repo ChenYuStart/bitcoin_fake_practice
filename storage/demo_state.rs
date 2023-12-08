@@ -1,6 +1,6 @@
 
 
-trait Storage: Debug + Clone + Send + Sync + 'static {
+trait State: Debug + Clone + Send + Sync + 'static {
     /*/// Current block height.
     fn block_height(&self) -> u64;
 

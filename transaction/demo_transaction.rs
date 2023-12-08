@@ -1,6 +1,6 @@
 
 
-const SUBSIDY: i32= 10;
+const SUBSIDY: i32= 100;
 
 struct Transaction {
     tx_hash: String,
@@ -9,7 +9,7 @@ struct Transaction {
 }
 
 impl Transaction {
-    pub fn new_coinbase(to_address: &str) -> Transaction {
+    fn new_coinbase(to_address: &str) -> Transaction {
         let tx_in = TxIn::default();
         let tx_out = TxOut::new(SUBSIDY, to_address);
         
@@ -23,7 +23,7 @@ impl Transaction {
         tx
     }
 
-    pub fn new_utxo<T: ChainStorage, U: UtxoStorage>(from: &str, to: &str, amount: i32,
+    fn new_utxo<T: ChainStorage, U: UtxoStorage>(from: &str, to: &str, amount: i32,
         utxo_set: &UTXOSet<U>, chain: &BlockChain<T>) -> Self {
         let wallet_map = WalletMap::load_wallet_from_file().unwrap();
         println!("wallet_map: {:?}", wallet_map);
@@ -91,7 +91,7 @@ impl Transaction {
         }
     }
 
-    pub fn verify<T: Storage>(&self, chain: &BlockChain<T>) -> bool {
+    fn verify<T: Storage>(&self, chain: &BlockChain<T>) -> bool {
         if self.is_coinbase() {
             return true;
         }

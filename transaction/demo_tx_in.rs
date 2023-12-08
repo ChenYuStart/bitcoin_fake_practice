@@ -27,15 +27,15 @@ impl TxIn {
         }
     }
 
-    pub fn get_tx_hash(&self) -> String {
+    fn get_tx_hash(&self) -> String {
         self.tx_hash.clone()
     }
 
-    pub fn get_vout(&self) -> usize {
+    fn get_vout(&self) -> usize {
         self.tx_out_index.clone()
     }
 
-    pub fn get_signature(&self) -> &[u8] {
+    fn get_signature(&self) -> &[u8] {
         self.signature.as_bytes()
     }
 
@@ -43,7 +43,7 @@ impl TxIn {
         self.signature = String::from_utf8_lossy(&signature).into();
     }
 
-    pub fn set_pub_key(&mut self, pub_key: &str) {
+    fn set_public_key(&mut self, pub_key: &str) {
         self.public_key = pub_key.to_string();
     }
 }

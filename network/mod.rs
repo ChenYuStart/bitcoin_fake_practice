@@ -7,7 +7,7 @@ mod demo_net_service;
 mod demo_node_status;
 
 
-pub async fn run<S: State>(addr: SocketAddr, node: Node<S>) {
+async fn run<S: State>(addr: SocketAddr, node: Node<S>) {
     let router = new_router(node);
 
     info!("📣 HTTP server listening on {addr}");
@@ -17,7 +17,7 @@ pub async fn run<S: State>(addr: SocketAddr, node: Node<S>) {
         .expect("Failed to run http server");
 }
 
-pub fn new_router<S: State>(node: Node<S>) -> Router {
+fn new_router<S: State>(node: Node<S>) -> Router {
     Router::new()
         .route("/blocks", get(get_blocks::<S>))
         .route("/blocks/:number", get(get_block::<S>))

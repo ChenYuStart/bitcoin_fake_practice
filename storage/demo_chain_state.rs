@@ -1,15 +1,13 @@
 
 
-struct ChainStorage {
-    //chain_database: sled::Db,
+struct ChainState {
     blocks: sled::Tree,
-    balances: sled::Db,
-    account2nonce: sled::Db,
+    balances: sled::Tree,
+    account2nonce: sled::Tree,
 }
 
-impl ChainStorage {
-    /// Create a new `SledState` instance.
-    pub fn new(data_dir: &str, balances: HashMap<String, u64>) -> Result<Self, Error> {
+impl ChainState {
+    fn new(data_dir: &str, balances: HashMap<String, u64>) -> Result<Self, Error> {
         let db = sled::open(data_dir)?;
         let state = Self {
             blocks: db.open_tree("blocks")?,
@@ -33,7 +31,7 @@ impl ChainStorage {
     }
 }
 
-impl State for ChainStorage {
+impl State for ChainState {
     fn block_height(&self) -> u64 {
         self.blocks.len() as u64
     }
@@ -51,14 +49,12 @@ impl State for ChainStorage {
     fn add_block(&self, block: Block) -> Result<(), Error> {
         (&self.blocks, &self.balances, &self.account2nonce)
             .transaction(|(blocks, balances, account2nonce)| {
-                // Apply txs
                 for tx in &block.txs {
                     fetch_sub(balances, &tx.from, tx.cost())?;
                     fetch_add(balances, &tx.to, tx.value)?;
                     fetch_add(account2nonce, &tx.from, 1)?;
                 }
 
-                // Apply block
                 fetch_add(balances, block.author(), block.block_reward())?;
                 blocks.insert(u64_encode(block.number()), Vec::from(&block))?;
 

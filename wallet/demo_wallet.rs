@@ -8,7 +8,7 @@ struct Wallet {
 }
 
 impl Wallet {
-    pub fn new() -> Wallet {
+    fn new() -> Wallet {
         let random = random_private_key();
         let key = hash_encode_pub_key(personal_key.clone().into_bytes());
         let mut payload = vec![];
@@ -22,7 +22,7 @@ impl Wallet {
         }
     }
 
-    pub fn get_personal_key(&self) -> String {
+    fn get_personal_key(&self) -> String {
         self.personal_key.clone()
     }
 
@@ -34,7 +34,7 @@ impl Wallet {
     }
 }
 
-pub fn hash_encode_pub_key(pub_key: &[u8]) -> Vec<u8> {
+fn hash_encode_pub_key(pub_key: &[u8]) -> Vec<u8> {
     let pub_key_sha256 = sha256(pub_key);
     let pub_key_ripemd160 = ripemd160(&pub_key_sha256);
     pub_key_ripemd160

@@ -14,7 +14,7 @@ struct DemoServer<E: EventHandler> {
 }
 
 impl<E: EventHandler> DemoServer<E> {
-    pub fn new(config: P2pConfig, cmd_receiver: UnboundedReceiver<Command>,) -> Result<Self, P2pError> {
+    fn new(config: P2pConfig, cmd_receiver: UnboundedReceiver<Command>,) -> Result<Self, P2pError> {
         let addr: Multiaddr = config.addr.parse()?;
         let local_key = config.gen_keypair()?;
         let local_peer_id = local_key.public().to_peer_id();
@@ -50,11 +50,11 @@ impl<E: EventHandler> DemoServer<E> {
         })
     }
 
-    pub fn set_event_handler(&mut self, handler: E) {
+    fn set_event_handler(&mut self, handler: E) {
         self.event_handler.set(handler).unwrap();
     }
 
-    pub async fn run(mut self) {
+    async fn run(mut self) {
         loop {
             select! {
                 _ = self.discovery_ticker.tick() => {

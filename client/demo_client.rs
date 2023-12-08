@@ -1,19 +1,15 @@
 
 
-struct DemoClient {
+struct Client {
     cmd_sender: UnboundedSender<Command>,
 }
 
-impl DemoClient {
+impl Client {
     pub fn blocking_request(&self, target: &str, request: Vec<u8>) -> Result<Vec<u8>, P2pError> {
         let target = target.parse().map_err(|_| P2pError::InvalidPeerId)?;
 
         let (responder, receiver) = oneshot::channel();
-        let _ = self.cmd_sender.send(Command::SendRequest {
-            target,
-            request,
-            responder,
-        });
+        let _ = self.cmd_sender.send(Command::SendRequest {target, request, responder,});
         receiver
             .blocking_recv()?
             .map_err(|_| P2pError::RequestRejected)
@@ -27,11 +23,8 @@ impl DemoClient {
     }
 
     pub fn get_known_peers(&self) -> Vec<String> {
-        self.get_node_status()
-            .known_peers
-            .into_keys()
-            .map(|id| id.to_base58())
-            .collect()
+        self.get_node_status().known_peers.into_keys()
+            .map(|id| id.to_base58()).collect()
     }
 
     pub fn get_node_status(&self) -> NodeStatus {

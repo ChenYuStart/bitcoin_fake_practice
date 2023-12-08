@@ -41,12 +41,12 @@ fn broadcast(client: Client) {
     }
 }
 
-pub fn new_secret_key() -> String {
+fn new_secret_key() -> String {
     let secret = ed25519::SecretKey::generate();
     bs58::encode(secret.as_ref()).into_string()
 }
 
-pub fn new<E: EventHandler>(config: P2pConfig) -> Result<(Client, Server<E>), P2pError> {
+fn new<E: EventHandler>(config: P2pConfig) -> Result<(Client, Server<E>), P2pError> {
     let (cmd_sender, cmd_receiver) = mpsc::unbounded_channel();
 
     let server = Server::new(config, cmd_receiver)?;
@@ -55,7 +55,7 @@ pub fn new<E: EventHandler>(config: P2pConfig) -> Result<(Client, Server<E>), P2
     Ok((client, server))
 }
 
-pub fn build_transport(keypair: identity::Keypair) -> Boxed<(PeerId, StreamMuxerBox)> {
+fn build_transport(keypair: identity::Keypair) -> Boxed<(PeerId, StreamMuxerBox)> {
     let noise_config = noise::Config::new(&keypair).expect("failed to construct the noise config");
 
     tcp::tokio::Transport::default()

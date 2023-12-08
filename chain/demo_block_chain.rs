@@ -4,13 +4,13 @@
 
 pub const DEFAULT_BITS: usize = 8;
 
-struct BlockChain<ChainStorage> {
-    save_sample: Arc<ChainStorage>,
+struct BlockChain<ChainState> {
+    save_sample: Arc<ChainState>,
     latest_block_hash: Arc<RwLock<String>>,
     block_height: AtomicUsize,
 }
 
-impl<ChainStorage> BlockChain<ChainStorage> {
+impl<ChainState> BlockChain<ChainState> {
     pub fn new(storage: Arc<T>) -> Self {
         if let Ok(Some(latest_block_hash)) = storage.get_latest_block_hash() {
             let height = storage.get_height().unwrap();
@@ -18,14 +18,12 @@ impl<ChainStorage> BlockChain<ChainStorage> {
                 storage,
                 latest_block_hash: Arc::new(RwLock::new(latest_block_hash)),
                 height: AtomicUsize::new(height.unwrap()),
-                //msg_sender,
             }
         } else {
             Self {
                 storage,
                 latest_block_hash: Arc::new(RwLock::new(String::new())),
                 height: AtomicUsize::new(0),
-                //msg_sender,
             }
         }
     }

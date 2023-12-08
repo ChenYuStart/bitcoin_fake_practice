@@ -12,7 +12,7 @@ struct InnerState {
 
 impl MemoryState {
     #[allow(dead_code)]
-    pub fn new(balances: HashMap<String, u64>) -> Self {
+    fn new(balances: HashMap<String, u64>) -> Self {
         let inner = InnerState {
             blocks: BTreeMap::new(),
             balances,
@@ -41,16 +41,13 @@ impl State for MemoryState {
     fn add_block(&self, block: Block) -> Result<(), Error> {
         let mut inner = self.inner.write().unwrap();
 
-        // Apply txs
         for tx in &block.txs {
             fetch_sub(&mut inner.balances, tx.from.clone(), tx.cost());
             fetch_add(&mut inner.balances, tx.to.clone(), tx.value);
             fetch_add(&mut inner.account2nonce, tx.from.clone(), 1);
         }
 
-        // Apply block
-        fetch_add(&mut inner.balances, block.author().into(), block.block_reward(),
-        );
+        fetch_add(&mut inner.balances, block.author().into(), block.block_reward(),);
         inner.blocks.insert(block.number(), block);
 
         Ok(())

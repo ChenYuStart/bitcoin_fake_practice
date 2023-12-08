@@ -1,7 +1,7 @@
 
 
 
-pub struct GenericProtocol;
+struct GenericProtocol;
 
 impl AsRef<str> for GenericProtocol {
     fn as_ref(&self) -> &str {

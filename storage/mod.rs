@@ -1,6 +1,6 @@
-mod demo_chain_stroage;
-mod demo_memory_storage;
-mod demo_storage;
-mod demo_utxo_storage;
+mod demo_chain_state;
+mod demo_memory_state;
+mod demo_state;
+mod demo_utxo_state;
 
 pub const UTXO_SET: &str = "utxos";

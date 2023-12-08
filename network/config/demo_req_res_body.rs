@@ -5,18 +5,18 @@ enum Body {
     BlocksResp(BlocksResp),
 }
 
-pub struct BlockHeightReq {}
+struct BlockHeightReq {}
 
 struct BlockHeightResp {
-    pub block_height: u64,
+    block_height: u64,
 }
 
-pub struct BlocksReq {
-    pub from_number: u64,
+struct BlocksReq {
+    from_number: u64,
 }
 
-pub struct BlocksResp {
-    pub blocks: Vec<Block>,
+struct BlocksResp {
+    blocks: Vec<Block>,
 }
 
 enum Method {
@@ -25,14 +25,14 @@ enum Method {
 }
 
 impl Method {
-    pub fn as_str_name(&self) -> &'static str {
+    fn as_str_name(&self) -> &'static str {
         match self {
             Method::Height => "HEIGHT",
             Method::Blocks => "BLOCKS",
         }
     }
 
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+    fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
             "HEIGHT" => Some(Self::Height),
             "BLOCKS" => Some(Self::Blocks),

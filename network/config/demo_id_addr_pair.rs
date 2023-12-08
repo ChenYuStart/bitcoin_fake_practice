@@ -30,3 +30,17 @@ impl FromStr for PeerIdWithMultiaddr {
         Ok(Self(peer_id, multiaddr))
     }
 }
+
+impl From<PeerIdWithMultiaddr> for String {
+    fn from(ma: PeerIdWithMultiaddr) -> String {
+        format!("{}", ma)
+    }
+}
+
+impl TryFrom<String> for PeerIdWithMultiaddr {
+    type Error = P2pError;
+
+    fn try_from(string: String) -> Result<Self, Self::Error> {
+        string.parse()
+    }
+}

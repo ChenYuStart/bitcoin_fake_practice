@@ -1,5 +1,7 @@
 
 
+const MAX_NONCE: usize = usize::MAX;
+
 struct PowParameters {
     target: _,
 }
@@ -21,19 +23,13 @@ impl PowParameters {
             if let Ok(pre_hash) = Self::prepare_data(block, nonce) {
                 let pre_hash_clone = pre_hash.clone();
                 let hash_u = sha256(&pre_hash);
-                //let hash = hash_u.as_slice();
                 let pre_hash_int = Uint256::from(hash_u.as_slice());
-                //dbg!(self.target);
-                //dbg!(pre_hash_int);
                 if pre_hash_int < self.target {
                     block.header.set_prev_hash(sha256_to_string(&pre_hash_clone));
                     break;
                 } else {
-                    //dbg!(self.target);
-                    //dbg!(pre_hash_int);
                     dbg!(nonce);
                     nonce += 1;
-                    //self.target = self.target.shl((1 as u32).into());
                 }
             }
         }

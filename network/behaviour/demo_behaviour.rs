@@ -1,8 +1,8 @@
 
 
 #[derive(NetworkBehaviour)]
-struct DemoChainBehaviour {
-    kad: Kademlia<MemoryStore>,
+struct Behaviour {
+    kad: kad::Bahaviour<MemoryStore>,
     identify: identify::Behaviour,
     ping: ping::Behaviour,
     req_resp: request_response::Behaviour<GenericCodec>,
@@ -10,17 +10,16 @@ struct DemoChainBehaviour {
     mdns: mdns::tokio::Behaviour,
 }
 
-impl DemoChainBehaviour {
-    pub fn new(local_key: Keypair, pubsub_topics: Vec<String>,
-        req_resp_config: Option<ReqRespConfig>,
-    ) -> Result<Self, P2pError> {
+impl Behaviour {
+    fn new(local_key: Keypair, pubsub_topics: Vec<String>,
+        req_resp_config: Option<ReqRespConfig>,) -> Result<Self, P2pError> {
         let local_pubkey = local_key.public();
         let local_id = local_pubkey.to_peer_id();
 
-        let kad_behaviour = Kademlia::new(local_id, MemoryStore::new(local_id));
+        let kad_behaviour = kad::Behaviour::new(local_id, MemoryStore::new(local_id));
 
         let id_behaviour = identify::Behaviour::new(identify::Config::new(
-            "/tinychain/identify/1.0.0".to_string(),
+            "/bitcoin_practice/identify/1.0.0".to_string(),
             local_pubkey,
         ));
 
@@ -29,11 +28,12 @@ impl DemoChainBehaviour {
             identify: id_behaviour,
             ping: ping::Behaviour::default(),
             req_resp: Self::new_req_resp(req_resp_config),
-            pubsub: Self::new_gossipsub(local_key, pubsub_topics)?,
+            gossipsub: Self::new_gossipsub(local_key, pubsub_topics)?,
+            mdns: mdns::tokio::Behaviour::new(mdns::Config::default(), local_id).unwrap(),
         })
     }
 
-    pub fn discover_peers(&mut self) {
+    fn discover_peers(&mut self) {
         if self.known_peers().is_empty() {
             debug!("☕ Discovery process paused due to no boot node");
         } else {
@@ -42,7 +42,7 @@ impl DemoChainBehaviour {
         }
     }
 
-    pub fn known_peers(&mut self) -> HashMap<PeerId, Vec<Multiaddr>> {
+    fn known_peers(&mut self) -> HashMap<PeerId, Vec<Multiaddr>> {
         let mut peers = HashMap::new();
         for b in self.kad.kbuckets() {
             for e in b.iter() {
@@ -53,29 +53,29 @@ impl DemoChainBehaviour {
         peers
     }
 
-    pub fn send_request(&mut self, target: &PeerId, request: Vec<u8>) -> RequestId {
+    fn send_request(&mut self, target: &PeerId, request: Vec<u8>) -> RequestId {
         self.req_resp.send_request(target, request)
     }
 
-    pub fn send_response(&mut self, ch: ResponseChannel<ResponseType>, response: ResponseType) {
+    fn send_response(&mut self, ch: ResponseChannel<ResponseType>, response: ResponseType) {
         let _ = self.req_resp.send_response(ch, response);
     }
 
-    pub fn broadcast(&mut self, topic: String, message: Vec<u8>) -> Result<(), P2pError> {
+    fn broadcast(&mut self, topic: String, message: Vec<u8>) -> Result<(), P2pError> {
         let topic = gossipsub::IdentTopic::new(topic);
         self.pubsub.publish(topic, message)?;
 
         Ok(())
     }
 
-    pub fn add_address(&mut self, peer_id: &PeerId, addr: Multiaddr) {
+    fn add_address(&mut self, peer_id: &PeerId, addr: Multiaddr) {
         if can_add_to_dht(&addr) {
             debug!("☕ Adding address {} from {:?} to the DHT.", addr, peer_id);
             self.kad.add_address(peer_id, addr);
         }
     }
 
-    pub fn remove_peer(&mut self, peer_id: &PeerId) {
+    fn remove_peer(&mut self, peer_id: &PeerId) {
         debug!("☕ Removing peer {} from the DHT.", peer_id);
         self.kad.remove_peer(peer_id);
     }
@@ -93,10 +93,8 @@ impl DemoChainBehaviour {
         req_resp::BehaviourBuilder::default().build()
     }
 
-    fn new_gossipsub(
-        local_key: Keypair,
-        topics: Vec<String>,
-    ) -> Result<gossipsub::Behaviour, P2pError> {
+    fn new_gossipsub(local_key: Keypair, topics: Vec<String>, )
+        -> Result<gossipsub::Behaviour, P2pError> {
         let message_id_fn = |message: &gossipsub::Message| {
             let mut s = DefaultHasher::new();
             message.data.hash(&mut s);
@@ -124,8 +122,9 @@ impl DemoChainBehaviour {
         Ok(gossipsub)
     }
 
-    pub fn build_transport(keypair: identity::Keypair) -> Boxed<(PeerId, StreamMuxerBox)> {
-        let noise_config = noise::Config::new(&keypair).expect("failed to construct the noise config");
+    fn build_transport(keypair: identity::Keypair) -> Boxed<(PeerId, StreamMuxerBox)> {
+        let noise_config = noise::Config::new(&keypair)
+            .expect("failed to construct the noise config");
     
         tcp::tokio::Transport::default()
             .upgrade(Version::V1Lazy)

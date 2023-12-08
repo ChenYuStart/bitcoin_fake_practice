@@ -1,7 +1,7 @@
 
 
 
-pub fn new_node<S: State, P: PeerClient>(author: String, state: S, peer_client: P,
+fn new_node<S: State, P: PeerClient>(author: String, state: S, peer_client: P,
     wallet: Wallet,) -> Node<S> {
     let (tx_sender, tx_receiver) = unbounded();
     let (block_sender, block_receiver) = unbounded();

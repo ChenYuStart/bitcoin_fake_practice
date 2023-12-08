@@ -1,11 +1,13 @@
 
 
-struct Miner {
+const MINE_INTERVAL: u64 = 20;
+
+struct Miner<S: State, P: PeerClient> {
     tx_pool: HashMap<String, Transaction>,
     tx_state: TransactionState,
     author: String,
     pow: PowParameters,
-    chain_storage: ChainStorage,
+    chain_state: State,
     peer_client: PeerClient,
     tx_receiver: Receiver<Transaction>,
     block_receiver: Receiver<Block>,
@@ -31,7 +33,7 @@ impl<S: State, P: PeerClient> Miner<S, P> {
             block_receiver,
         };
 
-        state.reset_pending_state();
+        state.reset_tx_state();
         state
     }
 
@@ -140,18 +142,16 @@ impl<S: State, P: PeerClient> Miner<S, P> {
             self.get_pending_balance(&tx.from) - tx.cost(),
         );
 
-        self.pending_state
-            .balances
+        self.pending_state.balances
             .insert(tx.to.clone(), self.get_pending_balance(&tx.to) + tx.value);
 
-        self.pending_state
-            .account2nonce
+        self.pending_state.account2nonce
             .insert(tx.from.clone(), tx.nonce + 1);
     }
 
-    fn reset_pending_state(&mut self) {
-        self.pending_state.balances = self.state.get_balances();
-        self.pending_state.account2nonce = self.state.get_account2nonce();
+    fn reset_tx_state(&mut self) {
+        self.tx_state.balances = self.state.get_balances();
+        self.tx_state.account2nonce = self.state.get_account2nonce();
 
         for tx in self.get_sorted_txs() {
             self.update_pending_state(&tx);
@@ -180,7 +180,7 @@ impl<S: State, P: PeerClient> Miner<S, P> {
 
     fn remove_mined_txs(&mut self, block: &Block) {
         for tx in &block.txs {
-            self.pending_txs.remove(&tx.hash());
+            self.tx_pool.remove(&tx.hash());
         }
     }
 
@@ -224,18 +224,10 @@ impl<S: State, P: PeerClient> Miner<S, P> {
     }
 
     fn get_pending_balance(&self, address: &str) -> u64 {
-        self.pending_state
-            .balances
-            .get(address)
-            .cloned()
-            .unwrap_or_default()
+        self.pending_state.balances.get(address).cloned().unwrap_or_default()
     }
 
     fn get_pending_nonce(&self, address: &str) -> u64 {
-        self.pending_state
-            .account2nonce
-            .get(address)
-            .cloned()
-            .unwrap_or_default()
+        self.pending_state.account2nonce.get(address).cloned().unwrap_or_default()
     }
 }

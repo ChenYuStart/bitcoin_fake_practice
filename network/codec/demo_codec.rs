@@ -88,8 +88,7 @@ impl Codec for GenericCodec {
 
             {
                 let mut length = unsigned_varint::encode::usize_buffer();
-                io.write_all(unsigned_varint::encode::usize(res.len(), &mut length))
-                    .await?;
+                io.write_all(unsigned_varint::encode::usize(res.len(), &mut length)).await?;
             }
 
             io.write_all(&res).await?;

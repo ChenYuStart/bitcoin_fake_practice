@@ -1,18 +1,18 @@
 
 type WalletAddress = String;
-pub const WALLET_FILE: &str = "wallet.dat";
+const WALLET_FILE: &str = "wallet.dat";
 
 struct WalletMap {
     wallet_map: HashMap<WalletAddress, Wallet>
 }
 
 impl WalletMap {
-    pub fn new() -> Result<Self, BlockChainError> {
+    fn new() -> Result<Self, BlockChainError> {
         let wallet_map = WalletMap::load_wallet_from_file();
         wallet_map
     }
 
-    pub fn create_wallet(&mut self) -> String {
+    fn create_wallet(&mut self) -> String {
         let wallet = Wallet::new();
         let address = wallet.get_address();
         self.wallet_map.insert(address.clone(), wallet);
@@ -20,7 +20,7 @@ impl WalletMap {
         address
     }
 
-    pub fn get_wallet(&self, address: &str) -> Option<&Wallet> {
+    fn get_wallet(&self, address: &str) -> Option<&Wallet> {
         self.wallet_map.get(address)
     }
 
@@ -35,7 +35,7 @@ impl WalletMap {
         Ok(())
     }
 
-    pub fn load_wallet_from_file() -> Result<Self, BlockChainError> {
+    fn load_wallet_from_file() -> Result<Self, BlockChainError> {
         let path = current_dir().unwrap().join(WALLET_FILE);
         info!("Wallet path: {:?}", path);
         if !path.exists() {

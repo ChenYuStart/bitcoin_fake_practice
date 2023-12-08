@@ -1,17 +1,17 @@
 
 
 struct UtxoSet<UtxoStorage> {
-    save_sample: Arc<RwLock<UtxoStorage>>,//utxoMap<(TxHash, OutIndex), (ToAddress, Amount)>,
+    save_sample: Arc<RwLock<UtxoStorage>>,//utxo HashMap<Vec<(TxHash, OutIndex)>, (ToAddress, Amount)>,
 }
 
 impl<U: UtxoStorage, T: ChainStorage> UtxoSet<U> {
-    pub fn new(storage: Arc<U>) -> Self {
+    fn new(storage: Arc<U>) -> Self {
         Self { 
             storage
         }
     }
 
-    pub fn reindex(&self, chain: &BlockChain<T>) -> Result<(), BlockChainError> {
+    fn reindex(&self, chain: &BlockChain<T>) -> Result<(), BlockChainError> {
 
 
 
@@ -24,7 +24,7 @@ impl<U: UtxoStorage, T: ChainStorage> UtxoSet<U> {
     }
 
     fn find_spendable_outputs(&self, public_key_hash: &[u8], amount: i32)
-        -> HashMap<(String, usize), (String, i32)> {
+        -> HashMap<Vec<(String, usize)>, (String, i32)> {
 
 
 

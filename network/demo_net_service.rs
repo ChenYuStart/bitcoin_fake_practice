@@ -1,6 +1,6 @@
 
 
-pub fn new<S: State>(config: P2pConfig) -> Result<(P2pClient, Server<EventHandlerImpl<S>>), Error> {
+fn new<S: State>(config: P2pConfig) -> Result<(P2pClient, Server<EventHandlerImpl<S>>), Error> {
     let (client, p2p_server) = tinyp2p::new(config)?;
     let p2p_client = P2pClient::new(client);
 
